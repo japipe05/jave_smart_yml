@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, UploadFile, File, HTTPException
+from fastapi import APIRouter, Form, UploadFile, File, HTTPException, FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
 from zipfile import ZipFile
@@ -6,9 +6,12 @@ import shutil
 import os
 import re
 import logging
-
 from app.services.file_service import save_uploaded_file, upload_file_to_openai, analyze_zip_with_gpt
 from app.services.github_service import subir_proyecto_a_github
+from pydantic import BaseModel
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
+
 
 
 logging.basicConfig(level=logging.INFO)
@@ -34,13 +37,18 @@ async def upload_and_process_file(
             shutil.rmtree(extracted_dir)
             logger.info(f"Directorio existente eliminado: {extracted_dir}")
 
+        prod_dir = Path(f"{extracted_dir}prod")  # /uploads/holamundonextjs15prod
+
+        if os.path.exists(prod_dir) and os.path.isdir(prod_dir):
+            shutil.rmtree(prod_dir)
+            
         # Descomprimir el archivo
         with ZipFile(file_path, 'r') as zip_ref:
             zip_ref.extractall(extracted_dir)
         logger.info(f"Archivo descomprimido en: {extracted_dir}")
 
         # Renombrar carpeta agregando 'prod'
-        prod_dir = Path(f"{extracted_dir}prod")  # /uploads/holamundonextjs15prod
+        
         if prod_dir.exists():
             shutil.rmtree(prod_dir)
             logger.info(f"Directorio 'prod' existente eliminado: {prod_dir}")
@@ -150,3 +158,38 @@ async def download_file(filename: str):
     if not zip_path.exists():
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     return FileResponse(path=zip_path, filename=filename, media_type='application/zip')
+
+# Cassandra setup
+auth_provider = PlainTextAuthProvider('cassandra', 'cassandra')
+cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
+session = cluster.connect()
+session.set_keyspace('users_keyspace')
+
+# Create table if not exists
+session.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        email TEXT PRIMARY KEY,
+        password TEXT
+    );
+""")
+
+
+class User(BaseModel):
+    email: str
+    password: str
+
+@app.post("/register")
+def register(user: User):
+    existing = session.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+    if existing.one():
+        raise HTTPException(status_code=400, detail="User already exists")
+    session.execute("INSERT INTO users (email, password) VALUES (%s, %s)", (user.email, user.password))
+    return {"message": "User registered successfully"}
+
+@app.post("/login")
+def login(user: User):
+    result = session.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+    record = result.one()
+    if not record or record.password != user.password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": "Login successful"}
