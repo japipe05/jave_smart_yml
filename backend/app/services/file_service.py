@@ -33,7 +33,7 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
     prompt = (
         f"Introducción: {message}\n"
         "Descomprime el archivo .zip y analiza su contenido y conbase a ese contenido realiza lo siguiente:\n"
-        "1. Creame el archivo Dockerfile con las siguientes caacteristicas:\n"
+        "1. Creame el archivo Dockerfile estrctura de salida comience obligatorio con ```Dockerfile con las siguientes caacteristicas:\n"
         "a. Usa una imagen ligera de Node.js basada en Alpine Linux yna version mayor o igual a la 20 y la nombra builder\n"
         "b. Define el directorio de trabajo dentro del contenedor\n"
         "c. Copia solo package.json y package-lock.json primero\n"
@@ -44,10 +44,22 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
         "h. Copia solo los archivos necesarios desde la fase builder. package.json, .next, public, node_modules\n"
         "i. Abre el puerto 3000 para que la aplicación Next.js pueda recibir tráfico\n"
         "j. Ejecuta la aplicación en modo producción\n"
-        "2. Crea el archivo docker-compose.yml con las siguientes características:\n"
+        "2. Crea el archivo docker-compose.yml estrctura de salida comience obligatorio con ```yaml  con las siguientes características:\n"
         "a. Especifica la versión de docker-compose que se está utilizando. La versión mayor o igual a 3.8 es compatible con Docker 19.03.0\n"
         "b. Establece el nombre del container_name como frontend_app\n"
         "c. Mapea puertos entre el contenedor y el host\n"
+        "3. Crea el archivo vercel.yml estrctura de salida comience obligatorio con```yamlVercel con las siguientes características:\n"
+        "a. Nombre del flujo de trabajo, Es solo una etiqueta para identificarlo en GitHub Actions\n"
+        "b. Crea la accion cuando se hace push sobre la rama main\n"
+        "c. Crea un job llamando al deploy\n"
+        "d. Se ejecutara en un entorno linux\n"
+        "e. Clona el codigo del repositorio al runner con <= v3\n"
+        "f. Configura Node.js en la version <= para poder usar las herramientas basadas en java script como npm  20\n"
+        "g. Instala la linea de comandos de vercel necesaria para el despliegue\n"
+        "h. Realiza el despligue del proyecto\n"
+        "i. --prod despliegue en produccion\n"
+        "j. --yes responde automaticamente a las preguntas interactivas\n"
+        "k. --Token=llavesecretavercel\n"
     )
 
 
@@ -79,6 +91,17 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
                     },
                     "required": ["docker_compose_content"]
                 }
+            },
+            {
+                "name": "generate_vercel_config",
+                "description": "Genera un archivo vercel.yml optimizado para una aplicación Next.js.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "vercel_config_content": {"type": "string", "description": "Contenido del archivo vercelyml"}
+                    },
+                    "required": ["vercel_config_content"]
+                }
             }
         ],
         function_call="auto"
@@ -90,15 +113,20 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
 def create_dockerfile_and_yml(upload_dir: Path):
     dockerfile_path = upload_dir / "Dockerfile"
     yml_path = upload_dir / "docker-compose.yml"
+    vercel_path = upload_dir / "vercel.yml"
+
 
     # Aquí deberías generar el contenido de los archivos
     dockerfile_content = "Contenido del Dockerfile"
     yml_content = "Contenido del docker-compose.yml"
+    vercel_content = "Contenido del vercel.yml"
 
     dockerfile_path.write_text(dockerfile_content.strip())
     yml_path.write_text(yml_content.strip())
+    vercel_path.write_text(vercel_content.strip())
 
     return {
         "dockerfile": str(dockerfile_path),
-        "yml": str(yml_path)
+        "yml": str(yml_path),
+        "vercel": str(vercel_path)
     }

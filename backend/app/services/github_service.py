@@ -5,8 +5,9 @@ import subprocess
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
-
-
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -14,13 +15,16 @@ def obtener_usuario_github(token):
     headers = {
         "Authorization": f"token {token}"
     }
+
     response = requests.get("https://api.github.com/user", headers=headers)
+ 
     if response.status_code == 200:
         return response.json()["login"]
     else:
         raise Exception("No se pudo obtener el nombre de usuario de GitHub.")
 
 def crear_repositorio_github(nombre_repo, descripcion, token):
+
     usuario = obtener_usuario_github(token)
     url_repo = f"https://api.github.com/repos/{usuario}/{nombre_repo}"
     headers = {
@@ -52,11 +56,12 @@ def crear_repositorio_github(nombre_repo, descripcion, token):
 def ejecutar_comando(comando, cwd):
     subprocess.run(comando, check=True, cwd=cwd)
 
-def subir_proyecto_a_github(folder_path: Path, nombre_repo: str, descripcion: str = "Subido automáticamente"):
-    token = os.getenv("GITHUB_TOKEN")
-    if not token:
-        raise Exception("GITHUB_TOKEN no encontrado en el entorno.")
 
+def subir_proyecto_a_github(github_token_match: str, folder_path: Path, nombre_repo: str, descripcion: str = "Subido automáticamente"):
+    token = github_token_match
+    if not token:
+        raise Exception(" no encontrado en el entorno.")
+ 
     remote_url = crear_repositorio_github(nombre_repo, descripcion, token)
 
     ejecutar_comando(["git", "init"], cwd=folder_path)
@@ -78,11 +83,13 @@ def subir_proyecto_a_github(folder_path: Path, nombre_repo: str, descripcion: st
         subprocess.run(["git", "fetch"], cwd=folder_path, check=True, capture_output=True)
         result = subprocess.run(["git", "ls-remote", "--heads", "origin", "main"],
                                 cwd=folder_path, capture_output=True, text=True)
+      
         if result.stdout.strip():
             print("⚠️  El repositorio remoto ya tiene una rama 'main'. Se recomienda revisar para evitar conflictos.")
     except subprocess.CalledProcessError as e:
         print(f"Error al verificar el estado remoto: {e}")
 
-    ejecutar_comando(["git", "push", "-u", "origin", "main"], cwd=folder_path)
+    #ejecutar_comando(["git", "push", "-u", "origin", "main"], cwd=folder_path)
+    ejecutar_comando(["git", "push", "-u", "--force", "origin", "main"], cwd=folder_path)
 
     return remote_url

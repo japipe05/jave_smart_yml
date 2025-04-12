@@ -64,12 +64,46 @@ async def upload_and_process_file(
         matches = re.findall(r'```yaml\n(.*?)```', generated_content, re.DOTALL)
         yml_content = matches[0].strip() if matches else ""
 
+       # Extraer vercel.yml (buscando el bloque con la palabra "vercel")
+        matches = re.findall(r'```yamlVercel\n(.*?)```', generated_content, re.DOTALL)
+        vercel_content = matches[0].strip() if matches else ""
+
+        # Si no se encontró en el primer intento, buscar con otro patrón más genérico
+        if vercel_content == "":
+            matches = re.findall(r'```yaml\n(.*?)```', generated_content, re.DOTALL)
+            vercel_content = next(
+                (block.strip() for block in matches if 'vercel' in block.lower() and 'deploy' in block.lower()), 
+                ""
+            )
+
+        # Buscar el valor del token en el mensaje
+        if message:
+            vercel_token_match = re.search(r'VERCEL_TOKEN=([^\s]+)', message)
+            # Proceed with processing
+        else:
+            logger.warning("No message provided in the form data.")
+            # Handle the absence of message appropriately
+
+        # Reemplazar "llavesecretavercel" solo si se encontró el token
+        if vercel_token_match:
+            token_value = vercel_token_match.group(1)
+            vercel_content = vercel_content.replace("llavesecretavercel", token_value)
+        else:
+            logger.warning("No se encontró VERCEL_TOKEN en el mensaje.")
+
+
         # Guardar archivos en la carpeta renombrada
         dockerfile_path = prod_dir / "Dockerfile"
         yml_path = prod_dir / "docker-compose.yml"
+        vercel_path = prod_dir / ".github" / "workflows" / "vercel.yml"
+
+        # Esta línea crea las carpetas necesarias
+        vercel_path.parent.mkdir(parents=True, exist_ok=True)
+
         dockerfile_path.write_text(dockerfile_content)
         yml_path.write_text(yml_content)
-        logger.info(f"Dockerfile y docker-compose.yml guardados en: {prod_dir}")
+        vercel_path.write_text(vercel_content)
+        logger.info(f"Dockerfile, docker-compose.yml y vercel.yml  guardados en: {prod_dir}")
 
         # Comprimir la carpeta final
         output_zip_path = prod_dir.with_suffix('.zip')  # /uploads/holamundonextjs15prod.zip
@@ -79,10 +113,12 @@ async def upload_and_process_file(
         shutil.make_archive(str(prod_dir), 'zip', root_dir=prod_dir)
         logger.info(f"Carpeta comprimida en: {output_zip_path}")
 
-        # Subir la carpeta final a GitHub
+        # Subir la carpeta final a GitHub 
         nombre_repo = prod_dir.name  # por ejemplo: holamundonextjs15prod
         try:
-            github_url = subir_proyecto_a_github(prod_dir, nombre_repo)
+            match = re.search(r'GITHUB_TOKEN=([^\s]+)', message)
+            github_token_match = match.group(1) if match else None
+            github_url = subir_proyecto_a_github(github_token_match,prod_dir, nombre_repo)
             logger.info(f"Repositorio subido con éxito: {github_url}")
         except Exception as github_error:
             logger.error(f"No se pudo subir el repositorio a GitHub: {github_error}")
@@ -99,6 +135,7 @@ async def upload_and_process_file(
                 "generated_files": {
                     "dockerfile": str(dockerfile_path),
                     "yml": str(yml_path),
+                    "vercel": str(vercel_path),
                     "zip_url": f"/files/download/{output_zip_path.name}"
                 }
             })
