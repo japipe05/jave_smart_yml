@@ -8,9 +8,9 @@ import re
 import logging
 from app.services.file_service import save_uploaded_file, upload_file_to_openai, analyze_zip_with_gpt
 from app.services.github_service import subir_proyecto_a_github
-from pydantic import BaseModel
-from cassandra.cluster import Cluster
-from cassandra.auth import PlainTextAuthProvider
+from app.models.file_metadata import FileMetadata
+from app.services.file_service import save_file_metadata
+
 
 
 
@@ -131,8 +131,18 @@ async def upload_and_process_file(
         except Exception as github_error:
             logger.error(f"No se pudo subir el repositorio a GitHub: {github_error}")
             github_url = None
-
-
+        logger.info(f"Adjuntando amongo db")
+        metadata = FileMetadata(
+            filename=file.filename,
+            message=message,
+            dockerfile_path=str(dockerfile_path),
+            yml_path=str(yml_path),
+            vercel_path=str(vercel_path),
+            zip_path=f"/files/download/{output_zip_path.name}",
+            github_url=github_url,
+        )
+        await save_file_metadata(metadata)
+        logger.info(f"Fin del programa")
         return JSONResponse(content={
                 "message": "Archivo subido, analizado y procesado con éxito. \n"
                            "1. Descarga el archivo .zip. \n"
@@ -159,37 +169,3 @@ async def download_file(filename: str):
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     return FileResponse(path=zip_path, filename=filename, media_type='application/zip')
 
-# Cassandra setup
-auth_provider = PlainTextAuthProvider('cassandra', 'cassandra')
-cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
-session = cluster.connect()
-session.set_keyspace('users_keyspace')
-
-# Create table if not exists
-session.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        email TEXT PRIMARY KEY,
-        password TEXT
-    );
-""")
-
-
-class User(BaseModel):
-    email: str
-    password: str
-
-@app.post("/register")
-def register(user: User):
-    existing = session.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-    if existing.one():
-        raise HTTPException(status_code=400, detail="User already exists")
-    session.execute("INSERT INTO users (email, password) VALUES (%s, %s)", (user.email, user.password))
-    return {"message": "User registered successfully"}
-
-@app.post("/login")
-def login(user: User):
-    result = session.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-    record = result.one()
-    if not record or record.password != user.password:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"message": "Login successful"}

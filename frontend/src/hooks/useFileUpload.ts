@@ -78,6 +78,7 @@ export function useFileUpload() {
                 setChatMessages((prev) => [...prev, { sender: "bot", text: result.message }]);
             }
         } catch (error) {
+            console.error(error);
             setChatMessages((prev) => [...prev, { sender: "bot", text: "Error en la subida del archivo" }]);
         } finally {
             setLoading(false);

@@ -1,3 +1,14 @@
 fastapi
 python-multipart
 uvicorn[standard]
+cassandra-driver
+openai
+requests
+bcrypt
+python-jose
+db
+motor
+sqlalchemy
+psycopg2-binary
+dotenv
+python-dotenv

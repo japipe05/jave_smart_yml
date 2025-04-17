@@ -3,11 +3,23 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import shutil
+from app.database.mongo import db
+from app.models.file_metadata import FileMetadata
+import logging
+
+    # usar_prompt.py
+from app.database.postgres import SessionLocal
+from app.models.prompt_model import Prompt
+
 # Cargar las variables de entorno 
 load_dotenv()
 
 # Cliente de OpenAI
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def save_uploaded_file(file) -> str:
     """Guarda el archivo en la carpeta uploads/ y devuelve la ruta"""
@@ -30,6 +42,18 @@ def upload_file_to_openai(file_path: str) -> str:
 
 def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
     """Envía un prompt a GPT-4 para analizar el .zip y generar Dockerfile + docker-compose.yml"""
+
+    db = SessionLocal()
+    prompt_obj = db.query(Prompt).filter(Prompt.id == 1).first()
+    db.close()
+
+    message = "Este es un mensaje de prueba"
+    prompt = (
+        f"Introducción: {message}\n"
+        f"{prompt_obj.descripcion}"
+    )
+    logger.info("GPT hizo una llamada a función: {prompt}")
+    '''
     prompt = (
         f"Introducción: {message}\n"
         "Descomprime el archivo .zip y analiza su contenido y conbase a ese contenido realiza lo siguiente:\n"
@@ -61,7 +85,7 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
         "j. --yes responde automaticamente a las preguntas interactivas\n"
         "k. --Token=llavesecretavercel\n"
     )
-
+    '''
 
     response = client.chat.completions.create(
         model=model_name,
@@ -107,7 +131,23 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
         function_call="auto"
     )
 
-    return response.choices[0].message.content
+    #return response.choices[0].message.content
+
+    message = response.choices[0].message
+
+    if message.function_call:
+        logger.info("GPT hizo una llamada a función:")
+        logger.info("Nombre de la función: %s", message.function_call.name)
+        logger.info("Argumentos: %s", message.function_call.arguments)
+        return message.function_call.arguments
+    elif message.content:
+        logger.info("Respuesta directa del modelo:")
+        return message.content
+    else:
+        logger.warning("Respuesta inesperada o vacía del modelo.")
+        return {"error": "No se recibió contenido válido del modelo"}
+
+
 
 
 def create_dockerfile_and_yml(upload_dir: Path):
@@ -130,3 +170,11 @@ def create_dockerfile_and_yml(upload_dir: Path):
         "yml": str(yml_path),
         "vercel": str(vercel_path)
     }
+
+
+async def save_file_metadata(data: FileMetadata):
+    await db.files.insert_one(data.dict())
+
+
+
+

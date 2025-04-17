@@ -34,7 +34,7 @@ def crear_repositorio_github(nombre_repo, descripcion, token):
     # Verificar si ya existe
     response = requests.get(url_repo, headers=headers)
     if response.status_code == 200:
-        print(f"Repositorio '{nombre_repo}' ya existe en la cuenta de {usuario}.")
+        logger.info(f"Repositorio '{nombre_repo}' ya existe en la cuenta de {usuario}.")
         return response.json()["clone_url"]
     elif response.status_code != 404:
         raise Exception(f"Error al verificar repositorio: {response.status_code}, {response.json()}")
@@ -85,10 +85,9 @@ def subir_proyecto_a_github(github_token_match: str, folder_path: Path, nombre_r
                                 cwd=folder_path, capture_output=True, text=True)
       
         if result.stdout.strip():
-            print("⚠️  El repositorio remoto ya tiene una rama 'main'. Se recomienda revisar para evitar conflictos.")
+            logger.info("⚠️  El repositorio remoto ya tiene una rama 'main'. Se recomienda revisar para evitar conflictos.")
     except subprocess.CalledProcessError as e:
-        print(f"Error al verificar el estado remoto: {e}")
-
+        logger.error(f"Error al verificar el estado remoto: {e}")
     #ejecutar_comando(["git", "push", "-u", "origin", "main"], cwd=folder_path)
     ejecutar_comando(["git", "push", "-u", "--force", "origin", "main"], cwd=folder_path)
 
