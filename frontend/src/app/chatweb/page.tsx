@@ -3,9 +3,32 @@ import Image from "next/image";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { FaPaperclip } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { TypeAnimation } from 'react-type-animation';
+import { useRouter } from "next/navigation"
 export default function Home() {
+
+  const router = useRouter()
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    console.log(token)
+    if (!token) {
+      router.replace("/login")
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [router])
+
+ 
+
+  const logout = () => {
+    localStorage.removeItem("token")
+    router.push("/login")
+  }
+
   const {
     message,
     setMessage,
@@ -20,6 +43,7 @@ export default function Home() {
   } = useFileUpload();
   const textareaRef = useRef(null);
 
+  if (checkingAuth) return null;
   return (
     <div
       className="flex min-h-screen items-center justify-center p-6 bg-cover bg-center relative"
@@ -35,6 +59,15 @@ export default function Home() {
       />
 
       <div className="w-full max-w-2xl bg-white/50 backdrop-blur-md border border-gray-300 rounded-lg shadow-xl p-8 flex flex-col items-center relative">
+
+      <button
+  onClick={logout}
+  className="absolute top-4 right-4 text-sm text-red-600 hover:text-red-800 font-medium transition"
+>
+  Cerrar sesión
+</button>
+
+
         {/* Logo */}
         <div className="flex justify-center items-center w-[100px] h-[100px] bg-white rounded-full shadow-md p-2 mb-4">
           <img
@@ -77,40 +110,40 @@ export default function Home() {
                 </div>
 
 
-                
-                {msg.text && !isUser ? (
-  <TypeAnimation
-    sequence={[msg.text]}
-    speed={10}
-    cursor={false}
-    style={{ whiteSpace: 'pre-line' }}
-  />
-) : msg.text ? (
-  <p className="whitespace-pre-line">{msg.text}</p>
-) : null}
 
-{msg.file && !isUser ? (
-  <a
-    href={msg.file.url}
-    download={msg.file.name}
-    className="mt-2 underline font-medium text-blue-600 hover:text-blue-800"
-  >
-    <TypeAnimation
-      sequence={[`📎 ${msg.file.name}`]}
-      speed={10}
-      cursor={false}
-      style={{ display: 'inline-block' }}
-    />
-  </a>
-) : msg.file ? (
-  <a
-    href={msg.file.url}
-    download={msg.file.name}
-    className="mt-2 underline font-medium text-blue-600 hover:text-blue-800"
-  >
-    📎 {msg.file.name}
-  </a>
-) : null}
+                {msg.text && !isUser ? (
+                  <TypeAnimation
+                    sequence={[msg.text]}
+                    speed={10}
+                    cursor={false}
+                    style={{ whiteSpace: 'pre-line' }}
+                  />
+                ) : msg.text ? (
+                  <p className="whitespace-pre-line">{msg.text}</p>
+                ) : null}
+
+                {msg.file && !isUser ? (
+                  <a
+                    href={msg.file.url}
+                    download={msg.file.name}
+                    className="mt-2 underline font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    <TypeAnimation
+                      sequence={[`📎 ${msg.file.name}`]}
+                      speed={10}
+                      cursor={false}
+                      style={{ display: 'inline-block' }}
+                    />
+                  </a>
+                ) : msg.file ? (
+                  <a
+                    href={msg.file.url}
+                    download={msg.file.name}
+                    className="mt-2 underline font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    📎 {msg.file.name}
+                  </a>
+                ) : null}
 
 
 
