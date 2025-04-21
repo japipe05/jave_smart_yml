@@ -3,43 +3,49 @@
 
 ![logo.png](public/img/logo.png)
 
-Class: Trabajo de grado <br>
-Code: 0000 <br>
+Class: Trabajo de grado  
+Code: 2404  
 Members:
 
-    John Paul Jasin Martinez - @jpjassinm
-    Andrés Felipe Rodríguez Roa - @japipe05
+- John Paul Jasin Martinez - @jpjassinm  
+- Andrés Felipe Rodríguez Roa - @japipe05  
 
+---
 
-# 🚀 Smart YML 
+## 📚 Índice
 
-Bienvenido a **Smart YML**, una solución fullstack de última generación que combina lo mejor del desarrollo moderno con herramientas poderosas y una arquitectura escalable. Esta plataforma es ideal para lanzar MVPs, startups o productos robustos de clase empresarial.
+- [🚀 Smart YML](#-smart-yml)
+- [🧠 Arquitectura General](#-arquitectura-general)
+- [🌐 Frontend - Next.js 15](#-frontend---nextjs-15)
+- [🔧 Backend - Python FastAPI](#-backend---python-fastapi)
+- [🐳 Preparado para Docker](#-preparado-para-docker)
+- [🧪 Buenas Prácticas](#-buenas-prácticas)
+- [✨ ¿Por Qué Usar Jave Smart YML?](#-por-qué-usar-jave-smart-yml)
+- [🤝 Contribuciones](#-contribuciones)
+- [👨‍💻 Desarrollado por](#-desarrollado-por)
+- [📄 Licencia](#-licencia)
+- [🏗️ Estructura del Proyecto](#️-estructura-del-proyecto)
+- [📷 Arquitecturas y Vistas](#-arquitecturas-y-vistas)
+- [🗃️ Consultas a la Base de Datos](#️-consultas-a-la-base-de-datos)
+
+---
+
+## 🚀 Smart YML 
+
+Bienvenido a **Smart YML**, una solución fullstack de última generación...
 
 ---
 
 ## 🧠 Arquitectura General
 
-📦 El proyecto está dividido en dos módulos principales:
-
-- 🖥️ **Frontend:** Next.js 15 + Tailwind + TypeScript  
-- 🧪 **Backend:** FastAPI + Python + Arquitectura Modular
-
-Totalmente integrado con soporte para Docker, despliegue continuo y buenas prácticas desde el inicio.
+📦 El proyecto está dividido en dos módulos principales...
 
 ---
 
 ## 🌐 Frontend - Next.js 15
 
-📁 Ruta: `./Frontend/`
-
-✨ **Tecnologías y Características:**
-
-- 🔥 Next.js 15 (App Router)
-- 💨 Tailwind CSS
-- 🧠 TypeScript
-- 🌐 PWA listo para usar
-- ⚙️ ESLint + Prettier + Docker
-- ⚡ Arquitectura limpia y escalable
+📁 Ruta: `./Frontend/`  
+✨ Tecnologías y características...
 
 ### 🚀 Ejecutar el Frontend
 
@@ -53,17 +59,8 @@ npm run dev
 
 ## 🔧 Backend - Python FastAPI
 
-📁 Ruta: `./Backend/`
-
-✨ **Tecnologías y Características:**
-
-- ⚡ FastAPI
-- 🐍 Python 3.11+
-- 🔐 Autenticación con JWT
-- 🗂️ Modular: rutas, modelos, servicios, configuración
-- 📄 Swagger UI y OpenAPI
-- 🐳 Preparado para Docker
-- 🛢️ Soporte para Cassandra / MongoDB / SQL
+📁 Ruta: `./Backend/`  
+✨ Tecnologías y características...
 
 ### 🚀 Ejecutar el Backend
 
@@ -83,31 +80,29 @@ Lanza toda la plataforma utilizando Docker Compose:
 docker-compose up --build
 ```
 
-Configuración optimizada para ambientes de desarrollo y producción.
-
 ---
 
 ## 🧪 Buenas Prácticas
 
-- ✅ Código limpio y escalable
-- ✅ Separación clara de responsabilidades
-- ✅ Entorno `.env` seguro y configurable
-- ✅ Listo para pruebas de integración
+- ✅ Código limpio y escalable  
+- ✅ Separación clara de responsabilidades  
+- ✅ Entorno `.env` seguro y configurable  
+- ✅ Listo para pruebas de integración  
 
 ---
 
 ## ✨ ¿Por Qué Usar Jave Smart YML?
 
-- ✅ **Desarrollo rápido** con herramientas modernas
-- ✅ **Escalable** para startups y sistemas empresariales
-- ✅ **Dockerizado** y listo para la nube
-- ✅ **Diseño moderno** y experiencia de usuario fluida
+- ✅ Desarrollo rápido  
+- ✅ Escalable  
+- ✅ Dockerizado  
+- ✅ Diseño moderno  
 
 ---
 
 ## 🤝 Contribuciones
 
-Este proyecto está abierto a la comunidad. Si quieres contribuir con mejoras, ¡haz un fork y envía un PR!
+Este proyecto está abierto a la comunidad...
 
 ---
 
@@ -123,6 +118,7 @@ Este proyecto está abierto a la comunidad. Si quieres contribuir con mejoras, �
 MIT — ¡Úsalo libremente y comparte el conocimiento!
 
 ---
+
 
 ## 🏗️ Estructura del Proyecto
 
@@ -171,30 +167,27 @@ MIT — ¡Úsalo libremente y comparte el conocimiento!
 └── README.md               # Documentación del backend
 ```
 
+
 ---
 
+## 📷 Arquitecturas y Vistas
 
-### <a id='1'>Arquitectura AS-IS</a> 
-
+### Arquitectura AS-IS  
 ![arquitectura_AS-IS.png](public/img/arquitectura_AS-IS.png)
 
-
-### <a id='2'>Arquitectura To-Be</a> 
-
+### Arquitectura To-Be  
 ![Arquitectura_To-Be.png](public/img/Arquitectura_To-Be.png)
 
-### <a id='3'>Login</a> 
-
+### Login  
 ![login.png](public/img/login.png)
 
-### <a id='4'>Registro</a> 
-
+### Registro  
 ![registro.png](public/img/registro.png)
 
-### <a id='5'>Chat Web</a> 
-
+### Chat Web  
 ![chat-web.png](public/img/chat-web.png)
 
+---
 
 ## 🗃️ Consultas a la Base de Datos
 
@@ -210,10 +203,4 @@ SELECT * FROM prompts;
 DESCRIBE KEYSPACES;
 DESCRIBE TABLES;
 SELECT * FROM appkeyspace.users;
-```
-
-### 🔧 Configuración Local en Docker
-
-```bash
-docker-compose up --build -d
 ```
