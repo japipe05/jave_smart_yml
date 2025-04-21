@@ -104,39 +104,90 @@ Este proyecto está abierto a la comunidad. Si quieres aportar mejoras, ¡haz un
 MIT — ¡Úsalo libremente y comparte el conocimiento!
 
 
-### <a id='10.1'>Diagramas de Arquitectura </a> 
+### <a id='1'>Arquitectura AS-IS</a> 
 
-![arquitectura.png](public/img/arquitectura.png)
-
-# jave_smart_yml
- Contenerización de aplicaciones en nextjs y pipelines de github actions más vercel 
-
-# intalar requeriment
-> pip install -r requirements.txt
-
-# borrar
-> docker-compose down -v   
-# Construir y levantar contenedores
-> docker-compose up --build -d
-
-#desarrollo
-
-remover
-docker-compose -f docker-compose.dev.yml down -v
-
-subir
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+![arquitectura_AS-IS.png](public/img/arquitectura_AS-IS.png)
 
 
-posrtgres falta validar
-pip install fastapi sqlalchemy psycopg2-binary uvicorn
+### <a id='2'>Arquitectura To-Be</a> 
 
+![Arquitectura_To-Be.png](public/img/Arquitectura_To-Be.png)
 
-postgres
-select * from prompts
+### <a id='3'>Login</a> 
 
-Cassandra
+![login.png](public/img/login.png)
+
+### <a id='4'>Registro</a> 
+
+![registro.png](public/img/registro.png)
+
+### <a id='5'>Chat Web</a> 
+
+![chat-web.png](public/img/chat-web.png)
+
+### <a id='6'>Estructura de carpetas</a> 
+
+Frontend/
+├── app/                    # App Router (Next.js 13+)
+│   ├── layout.tsx          # Layout principal
+│   ├── page.tsx            # Página raíz
+│   └── ...(rutas)/
+├── components/             # Componentes reutilizables
+├── styles/                 # Estilos globales (Tailwind config, etc)
+├── public/                 # Archivos públicos (imágenes, icons)
+├── utils/                  # Utilidades y helpers
+├── hooks/                  # Custom React Hooks
+├── services/               # Lógica de acceso a APIs externas
+├── middleware.ts           # Middlewares Next.js
+├── tailwind.config.ts      # Configuración Tailwind
+├── next.config.js          # Configuración de Next.js
+├── tsconfig.json           # Configuración TypeScript
+├── .eslintrc.json          # Reglas de linting
+├── .prettierrc             # Formato de código
+├── Dockerfile              # Imagen del Frontend
+├── package.json            # Dependencias y scripts
+└── README.md               # Documentación específica del frontend
+
+Backend/
+├── app/
+│   ├── main.py             # Punto de entrada de la app
+│   ├── api/                # Rutas organizadas por módulos
+│   │   ├── v1/
+│   │   │   ├── endpoints/  # Archivos de rutas
+│   │   │   └── __init__.py
+│   ├── core/               # Configuración general (settings, logging, etc)
+│   ├── models/             # Modelos de base de datos (Pydantic y/o ORM)
+│   ├── schemas/            # Esquemas Pydantic
+│   ├── services/           # Lógica de negocio
+│   ├── db/                 # Configuración de base de datos
+│   ├── utils/              # Funciones auxiliares
+│   └── middleware/         # Middlewares personalizados
+├── tests/                  # Pruebas unitarias y de integración
+├── requirements.txt        # Dependencias del proyecto
+├── .env                    # Variables de entorno
+├── Dockerfile              # Imagen del backend
+└── README.md               # Documentación específica del backend
+
+## 🗃️ Consultas de Base de Datos
+
+### 🐘 PostgreSQL
+
+Consulta la tabla de *prompts*:
+
+```sql
+SELECT * FROM prompts;
+```
+
+### Cassandra
+
+```sql
 DESCRIBE KEYSPACES;
 DESCRIBE TABLES;
 select * from appkeyspace.users;
+```
+
+### Para local en Docker
+
+```Bash
+docker-compose up --build -d
+```
