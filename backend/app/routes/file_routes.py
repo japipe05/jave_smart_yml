@@ -125,6 +125,7 @@ async def upload_and_process_file(
         nombre_repo = prod_dir.name  # por ejemplo: holamundonextjs15prod
         try:
             match = re.search(r'GITHUB_TOKEN=([^\s]+)', message)
+            logger.info(f"Repositorio subido con éxito: {match}")
             github_token_match = match.group(1) if match else None
             github_url = subir_proyecto_a_github(github_token_match,prod_dir, nombre_repo)
             logger.info(f"Repositorio subido con éxito: {github_url}")
@@ -132,6 +133,7 @@ async def upload_and_process_file(
             logger.error(f"No se pudo subir el repositorio a GitHub: {github_error}")
             github_url = None
         logger.info(f"Adjuntando amongo db")
+        
         metadata = FileMetadata(
             filename=file.filename,
             message=message,
@@ -147,8 +149,10 @@ async def upload_and_process_file(
                 "message": "Archivo subido, analizado y procesado con éxito. \n"
                            "1. Descarga el archivo .zip. \n"
                            "2. Descomprime el archivo .zip. \n"
-                           "3. Abre la carpeta y abre el terminal con CMD en Windows. "
-                           "4. Ejecuta el siguiente comando: \n docker-compose up --build -d",
+                           "3. Abre la carpeta y abre el terminal con CMD en Windows. \n"
+                           "4. Ejecuta el siguiente comando: \n docker-compose up --build -d \n"
+                           "5. En Github y en Vercel debe de validar el proyecto desplegado",
+
                 "file_path": str(file_path),
                 "generated_files": {
                     "dockerfile": str(dockerfile_path),

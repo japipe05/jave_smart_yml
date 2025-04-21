@@ -22,6 +22,8 @@ services:
       - vol_cassandra_data:/var/lib/cassandra
     networks:
       - app_shared_network
+    restart: always
+
       
   mongo:
     image: mongo:${MONGO_CONTAINER_TAG}
@@ -35,6 +37,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_CREDENCIAL}
     networks:
       - app_shared_network
+    restart: always
+
       
   db:
     image: postgres:${POSTGRES_CONTAINER_TAG}
@@ -49,6 +53,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - app_shared_network
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+    - app_shared_network
+  
+  
   backend:
     build:
       context: ./backend
@@ -62,16 +81,10 @@ services:
       - mongo
       - db
       - cassandra
+    command: sh -c "sleep 180 && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    networks:
+    - app_shared_network
 
-  frontend:
-    build:
-      context: ./frontend
-    container_name: frontend_app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    restart: always
 
 volumes:
   vol_mongo_data: 

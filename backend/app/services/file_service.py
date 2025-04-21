@@ -47,12 +47,10 @@ def analyze_zip_with_gpt(file_id: str,message: str,model_name: str) -> dict:
     prompt_obj = db.query(Prompt).filter(Prompt.id == 1).first()
     db.close()
 
-    message = "Este es un mensaje de prueba"
     prompt = (
-        f"Introducción: {message}\n"
         f"{prompt_obj.descripcion}"
     )
-    logger.info("GPT hizo una llamada a función: {prompt}")
+    logger.info(f"GPT hizo una llamada a función: {prompt}")
     '''
     prompt = (
         f"Introducción: {message}\n"

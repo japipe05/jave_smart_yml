@@ -12,6 +12,8 @@ import shutil
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 
+from public.insert_prompt import ensure_prompt_exists
+
 # Configurar logging
 log_file = Path("logs/server.log")
 log_file.parent.mkdir(parents=True, exist_ok=True)  # Crea la carpeta si no existe
@@ -45,6 +47,9 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 models = client.models.list()
 #for model in models.data:
 #    print(model.id)
+
+# Llamar al inicio de la app
+ensure_prompt_exists()
 
 # Configurar CORS
 app.add_middleware(
