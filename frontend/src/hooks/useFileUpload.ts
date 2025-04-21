@@ -1,16 +1,20 @@
+
 import { useState, useRef } from "react";
 import { uploadChatData } from "@/services/api";
 
 export function useFileUpload() {
     const [message, setMessage] = useState("");
-    const [model_name, setModel_name] = useState("gpt-4o-mini");
+    const [model_name, setModel_name] = useState("gpt-4-turbo");
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+
     const [chatMessages, setChatMessages] = useState<{
+        type?: string;
         sender: "user" | "bot";
         text?: string;
-        file?: { name: string; url: string }
-    }[]>([]);
+        file?: { name: string; url: string };
+      }[]>([]);
+      
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -23,6 +27,9 @@ export function useFileUpload() {
             setFile(null);
             if (fileInputRef.current) fileInputRef.current.value = "";
         }
+
+
+
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -37,20 +44,24 @@ export function useFileUpload() {
             return;
         }
 
+ 
+
+
         try {
             setLoading(true);
-
-            // ✅ Agregar el mensaje del usuario con el archivo si existe
             const userMessage = {
-                sender: "user",
+                type: "user",
+                sender: "user" as const, // ✅ Esto lo infiere como el literal "user"
                 text: message || "",
                 file: file ? { name: file.name, url: URL.createObjectURL(file) } : undefined
             };
-
+            
+            
+            
             setChatMessages((prev) => [...prev, userMessage]);
-
+            
             const result = await uploadChatData(message, model_name,file);
-
+            
             if (result.success) {
                 const botMessage = result.message;
                 const downloadUrl = `${process.env.NEXT_PUBLIC_API_URL_DESCA || "http://localhost:8000"}${result.download}`;
@@ -59,16 +70,20 @@ export function useFileUpload() {
                 setChatMessages((prev) => [
                   ...prev,
                   {
+                    type: "bot",
                     sender: "bot",
                     text: botMessage,
-                  },
+                  }
+                  ,
                   {
+                    type: "bot",
                     sender: "bot",
                     file: {
                       name: fileName,
-                      url: downloadUrl, // ✅ url completa para descargar
+                      url: downloadUrl,
                     },
                   },
+                  
                 ]);
               
                 setMessage("");
@@ -83,6 +98,9 @@ export function useFileUpload() {
         } finally {
             setLoading(false);
         }
+
+        
+
     };
 
 

@@ -6,28 +6,24 @@ import { IoIosSend } from "react-icons/io";
 import { useRef, useEffect, useState } from "react";
 import { TypeAnimation } from 'react-type-animation';
 import { useRouter } from "next/navigation"
+
 export default function Home() {
-
-  const router = useRouter()
-
+  const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token")
-    console.log(token)
     if (!token) {
       router.replace("/login")
     } else {
       setCheckingAuth(false);
     }
-  }, [router])
-
- 
+  }, [router]);
 
   const logout = () => {
-    localStorage.removeItem("token")
-    router.push("/login")
-  }
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
 
   const {
     message,
@@ -38,12 +34,15 @@ export default function Home() {
     fileInputRef,
     handleFileChange,
     handleSubmit,
-    selectedFile,
+
     loading,
   } = useFileUpload();
-  const textareaRef = useRef(null);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  //const [selectedFile, setSelectedFile] = useState<File | null>(null);
   if (checkingAuth) return null;
+
   return (
     <div
       className="flex min-h-screen items-center justify-center p-6 bg-cover bg-center relative"
@@ -59,25 +58,24 @@ export default function Home() {
       />
 
       <div className="w-full max-w-2xl bg-white/50 backdrop-blur-md border border-gray-300 rounded-lg shadow-xl p-8 flex flex-col items-center relative">
+        <button
+          onClick={logout}
+          className="absolute top-4 right-4 text-sm text-red-600 hover:text-red-800 font-medium transition"
+        >
+          Cerrar sesión
+        </button>
 
-      <button
-  onClick={logout}
-  className="absolute top-4 right-4 text-sm text-red-600 hover:text-red-800 font-medium transition"
->
-  Cerrar sesión
-</button>
-
-
-        {/* Logo */}
         <div className="flex justify-center items-center w-[100px] h-[100px] bg-white rounded-full shadow-md p-2 mb-4">
-          <img
-            src="https://sibcolombia.net/wp-content/uploads/2016/05/Logo-javeriana.png"
+          <Image
+            src="/Logo-javeriana.png"
             alt="Logo Javeriana"
+            width={100}
+            height={100}
             className="w-full h-full object-contain"
           />
+
         </div>
 
-        {/* Título */}
         <h1 className="text-2xl font-bold text-black text-center mb-6">
           ¿Qué Proyecto de Next.js quieres contenerizar?
         </h1>
@@ -98,7 +96,7 @@ export default function Home() {
               <div
                 key={index}
                 className={`mb-3 max-w-[80%] md:max-w-md px-4 py-3 rounded-2xl shadow-md text-[15px] leading-relaxed break-words flex flex-col
-          ${isUser ? "self-end bg-white text-gray-900 border border-gray-200" :
+                ${isUser ? "self-end bg-white text-gray-900 border border-gray-200" :
                     isError ? "self-start bg-red-100 text-red-800 border border-red-300" :
                       "self-start bg-white text-gray-900 border border-gray-200"}`}
                 style={{ fontFamily: "Ubuntu, sans-serif", animation: "fadeIn 0.3s ease-in-out" }}
@@ -108,8 +106,6 @@ export default function Home() {
                   {!isUser && !isError && <>🤖 <strong>IA</strong></>}
                   {isUser && <>👤 <strong>Tú</strong></>}
                 </div>
-
-
 
                 {msg.text && !isUser ? (
                   <TypeAnimation
@@ -144,9 +140,6 @@ export default function Home() {
                     📎 {msg.file.name}
                   </a>
                 ) : null}
-
-
-
               </div>
             );
           })}
@@ -161,12 +154,10 @@ export default function Home() {
           )}
         </div>
 
-        {/* Formulario */}
         <form
           onSubmit={handleSubmit}
           className="w-full bg-white border border-gray-300 rounded-lg shadow-md px-4 py-3 flex flex-col"
         >
-          {/* Selector de modelo */}
           <div className="mb-5">
             <label htmlFor="model" className="block text-sm font-medium text-gray-800 mb-2">
               Selecciona el modelo de ChatGPT
@@ -179,9 +170,9 @@ export default function Home() {
                 value={model_name}
                 onChange={(e) => setModel_name(e.target.value)}
               >
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
                 <option value="gpt-4o">gpt-4o</option>
                 <option value="gpt-4o-mini">GPT-4 Omni</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
                 <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -191,11 +182,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Área de texto */}
           <textarea
             ref={textareaRef}
             className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400 text-lg resize-none overflow-hidden"
-            placeholder="Describe tu proyecto"
+            placeholder="Describe tu proyecto y token GITHUB_TOKEN= y VERCEL_TOKEN="
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -211,14 +201,13 @@ export default function Home() {
             style={{ minHeight: "24px", maxHeight: "96px" }}
           />
 
-          {/* Archivo adjunto debajo del texto */}
-          {selectedFile && (
+          {File && (
             <div className="mt-2 p-2 bg-gray-200 text-gray-700 rounded-md flex items-center">
-              <span className="text-sm truncate">{selectedFile.name}</span>
+              <span className="text-sm truncate">{File.name}</span>
             </div>
           )}
 
-          {/* Iconos */}
+
           <div className="flex justify-between items-center mt-3">
             <label
               htmlFor="file-upload"
@@ -233,7 +222,7 @@ export default function Home() {
               accept=".zip"
               onChange={handleFileChange}
               ref={fileInputRef}
-
+              
             />
 
             <button type="submit" className="text-gray-600 hover:text-black cursor-pointer">

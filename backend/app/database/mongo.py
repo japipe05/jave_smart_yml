@@ -17,7 +17,8 @@ load_dotenv(dotenv_path=env_path)
 # Log para verificar si las variables de entorno se cargan correctamente
 logger.info(f"{env_path}")
 
-MONGO_HOST = os.getenv("MONGO_HOST","localhost")
+#MONGO_HOST = os.getenv("MONGO_HOST","localhost")
+MONGO_HOST = os.getenv("MONGO_HOST","mongo")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 MONGO_DB = os.getenv("MONGO_DB","db_zip_analysis_jave")
 MONGO_USUARIO = os.getenv("MONGO_USUARIO","felipe")

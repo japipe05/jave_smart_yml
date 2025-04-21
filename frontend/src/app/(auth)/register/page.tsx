@@ -14,10 +14,17 @@ export default function RegisterPage() {
     cedula: '',
     password: '',
   })
-
+  {/* comentario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
+ */}
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+  
 
   const handleRegister = async () => {
     try {
@@ -70,11 +77,12 @@ export default function RegisterPage() {
           />
           <select
             name="tipo_cedula"
-            placeholder="Tipo cedula"
+            
             className="px-4 py-2 rounded bg-white/20 text-black focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={formData.tipo_cedula}
             onChange={handleChange}
           >
+            <option value="">Selecciona tipo de documento</option>
             <option value="CC">CC - Cédula de Ciudadanía</option>
             <option value="TI">TI - Tarjeta de Identidad</option>
             <option value="CE">CE - Cédula de Extranjería</option>
