@@ -1,4 +1,4 @@
-name: Deploy Frontend & Backend to Docker Hub via Build Cloud
+name: Docker Build Cloud CI
 
 on:
   push:
@@ -6,33 +6,48 @@ on:
       - main
 
 jobs:
-  build:
+  build-backend:
+    name: Build Backend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
+      - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.DOCKER_USER }}
+          username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PAT }}
 
-      # 🔧 Build and push frontend
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: japipe05/frontend-app:latest
-
-      # 🔧 Build and push backend
-      - name: Build and Push Backend
+      - name: Build backend using Docker Build Cloud
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          file: ./backend/Dockerfile
           push: true
-          tags: japipe05/backend-app:latest
+          tags: japipe05/jave-backend:latest
+          builder: cloud-japipe05-javeriana
+          provenance: true
+
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PAT }}
+
+      - name: Build frontend using Docker Build Cloud
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: japipe05/jave-frontend:latest
+          builder: cloud-japipe05-javeriana
+          provenance: true
