@@ -18,6 +18,9 @@ COPY . /app
 # Crea el directorio 'uploads' si no existe y da permisos
 RUN mkdir -p /app/uploads && chmod -R 777 /app/uploads
 
+# Actualiza pip antes de instalar dependencias
+RUN pip install --upgrade pip
+
 # Instala dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
