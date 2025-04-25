@@ -12,7 +12,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - name: build image
-      run: docker build . --file frontend/Dockerfile -t japipe05/backend:latest
+      run: docker build . --file backend/Dockerfile -t japipe05/backend:latest
     - name: push image to docker hub
       run: |
         docker push japipe05/backend:latest
