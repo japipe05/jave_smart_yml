@@ -14,5 +14,6 @@ jobs:
     - name: build image
       run: docker build . --file frontend/Dockerfile -t japipe05/backend:latest
     - name: push image to docker hub
-      run: docker push japipe05/backend:latest
+      run: |
+        docker push japipe05/backend:latest
       
