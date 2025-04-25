@@ -204,4 +204,3 @@ DESCRIBE KEYSPACES;
 DESCRIBE TABLES;
 SELECT * FROM appkeyspace.users;
 ```
-prueba
