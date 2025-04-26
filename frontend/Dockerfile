@@ -8,7 +8,8 @@ COPY frontend/package.json frontend/package-lock.json ./
 
 RUN npm install
 
-COPY . .
+#COPY . .
+COPY frontend . 
 RUN npm run build
 
 # Fase de producción
