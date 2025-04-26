@@ -70,15 +70,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
----
 
-## 🐳 Preparado para Docker
-
-Lanza toda la plataforma utilizando Docker Compose:
-
-```bash
-docker-compose up --build
-```
 
 ---
 
@@ -218,3 +210,22 @@ prueba
  docker build -t japipe05/frontend:latest .
  docker push japipe05/frontend:latest  
 ```
+
+---
+
+## 🐳 Preparado para Docker
+
+Lanza toda la plataforma utilizando Docker Compose:
+
+```bash
+docker-compose up --build -d
+docker compose -f compose.prod.yaml up --build -d
+docker stack deploy --compose-file=docker-compose.yml my_stack
+```
+
+
+https://3000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io/login
+https://3000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io
+
+https://8000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io/
+https://8000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io
