@@ -3,7 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY frontend/package.json package-lock.json ./
+#COPY package.json package-lock.json ./
+COPY frontend/package.json frontend/package-lock.json ./
+
 RUN npm install
 
 COPY . .
