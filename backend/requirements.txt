@@ -10,5 +10,4 @@ db
 motor
 sqlalchemy
 psycopg2-binary
-dotenv
 python-dotenv
