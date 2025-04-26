@@ -13,9 +13,12 @@ jobs:
       uses: actions/checkout@v4
 
     - name: build image
-      run: docker build . --file backend/Dockerfile -t japipe05/backend:latest
+      run: |
+        docker build . --file backend/Dockerfile -t japipe05/backend:latest
+        docker build . --file frontend/Dockerfile -t japipe05/frontend:latest
     - name: push image to docker hub
       run: |
         docker login -u japipe05 -p "${{ secrets.DOCKER_PAT }}"
         docker push japipe05/backend:latest
+        docker push japipe05/frontend:latest
     

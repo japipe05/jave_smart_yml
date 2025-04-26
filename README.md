@@ -205,3 +205,16 @@ DESCRIBE TABLES;
 SELECT * FROM appkeyspace.users;
 ```
 prueba
+
+
+### 🔹 Docker
+
+```sql
+ cd .\backend\
+ docker build -t japipe05/backend:latest .
+ docker push japipe05/backend:latest  
+
+ cd .\frontend\  
+ docker build -t japipe05/frontend:latest .
+ docker push japipe05/frontend:latest  
+```
