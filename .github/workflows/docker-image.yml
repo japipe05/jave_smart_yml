@@ -1,19 +1,15 @@
-name: buiild and publish image ro Docker hub
-
-on:
-  [workflow_dispatch]
-
 jobs:
   publish:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: build image
+
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKER_PAT }}" | docker login -u "${{ vars.DOCKER_USER }}" --password-stdin
+
+    - name: Build image
       run: docker build . --file backend/Dockerfile -t japipe05/backend:latest
-    - name: push image to docker hub
-      run: |
-        docker push japipe05/backend:latest
-      
+
+    - name: Push image to Docker Hub
+      run: docker push japipe05/backend:latest
