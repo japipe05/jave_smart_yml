@@ -50,11 +50,11 @@ models = client.models.list()
 
 # Llamar al inicio de la app
 ensure_prompt_exists()
-
+frontend_url = os.getenv("FRONTEND_URL")
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Permite solicitudes desde el frontend
+    allow_origins=[frontend_url],  # Permite solicitudes desde el frontend
     allow_credentials=True,
     allow_methods=["*"],  # Permitir todos los métodos (GET, POST, etc.)
     allow_headers=["*"],  # Permitir todos los encabezados
