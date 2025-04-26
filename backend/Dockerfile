@@ -22,8 +22,8 @@ RUN mkdir -p /app/uploads && chmod -R 777 /app/uploads
 RUN pip install --upgrade pip
 
 # Instala dependencias
-#RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir -r backend/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+#RUN pip install --no-cache-dir -r backend/requirements.txt
 
 # Expone el puerto si usas FastAPI/Flask
 EXPOSE 8000

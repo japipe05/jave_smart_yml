@@ -24,11 +24,10 @@ export default function RegisterPage() {
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
-  
 
   const handleRegister = async () => {
     try {
-      const res = await fetch('http://localhost:8000/auth/register', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_DESCA}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

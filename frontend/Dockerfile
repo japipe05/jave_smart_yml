@@ -3,13 +3,13 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-#COPY package.json package-lock.json ./
-COPY frontend/package.json frontend/package-lock.json ./
+COPY package.json package-lock.json ./
+#COPY frontend/package.json frontend/package-lock.json ./
 
 RUN npm install
 
-#COPY . .
-COPY frontend . 
+COPY . .
+#COPY frontend . 
 RUN npm run build
 
 # Fase de producción

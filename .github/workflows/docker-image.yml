@@ -1,7 +1,13 @@
 name: buiild and publish image ro Docker hub
 
 on:
-  [workflow_dispatch]
+  #[workflow_dispatch]
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/Dockerfile'
+      - 'frontend/Dockerfile'
 
 jobs:
   publish:
