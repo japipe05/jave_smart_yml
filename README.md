@@ -164,10 +164,7 @@ MIT — ¡Úsalo libremente y comparte el conocimiento!
 
 ## 📷 Arquitecturas y Vistas
 
-### Arquitectura AS-IS  
-![arquitectura_AS-IS.png](public/img/arquitectura_AS-IS.png)
-
-### Arquitectura To-Be  
+### Arquitectura 
 ![Arquitectura_To-Be.png](public/img/Arquitectura_To-Be.png)
 
 ### Login  
@@ -178,8 +175,6 @@ MIT — ¡Úsalo libremente y comparte el conocimiento!
 
 ### Chat Web  
 ![chat-web.png](public/img/chat-web.png)
-
----
 
 ## 🗃️ Consultas a la Base de Datos
 
