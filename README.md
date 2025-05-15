@@ -223,6 +223,7 @@ docker compose -f compose.prod.yaml up --build -d
 docker stack deploy --compose-file=docker-compose.yml my_stack
 ```
 
+# links expuestas
 
 https://3000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io/login
 https://3000-japipe05-javesmartyml-h4fjdj2e2hz.ws-us118.gitpod.io
